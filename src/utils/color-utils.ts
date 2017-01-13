@@ -7,10 +7,8 @@
 /**
  * Utils object for color manipulation
  */
-const COLOR_REGEX= {
-    HEXA_COLOR_SMALL: /(#[\da-f]{3})($|,| |;|\n)/gi,
-    HEXA_COLOR: /(#[\da-f]{6})($| |,|;|\n)/gi,
-};
+const HEXA_COLOR_SMALL= /(#[\da-f]{3})($|,| |;|\n)/gi;
+const HEXA_COLOR = /(#[\da-f]{6})($| |,|;|\n)/gi;
 
 const ColorUtils = {
 
@@ -57,7 +55,7 @@ const ColorUtils = {
   }
 };
 
-export { COLOR_REGEX, ColorUtils };
+export { HEXA_COLOR, HEXA_COLOR_SMALL, ColorUtils };
 
 // 'use strict';
 

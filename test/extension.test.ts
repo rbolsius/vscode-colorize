@@ -11,34 +11,61 @@ import { assert } from 'chai';
 import * as vscode from 'vscode';
 import * as myExtension from '../src/extension';
 
-import { COLOR_REGEX } from '../src/utils/color-utils';
-
-const { HEXA_COLOR_SMALL } = COLOR_REGEX
+import { HEXA_COLOR_SMALL, HEXA_COLOR } from '../src/utils/color-utils';
 
 // Defines a Mocha test suite to group tests of similar kind together
 describe("COLOR_REGEX Tests", () => {
-
-    // Defines a Mocha unit test
-    // describe("css hexa shorthand color", () => {
-      it('Should match color with only integer', function() {
-        return assert.equal(HEXA_COLOR_SMALL.test('#000'), true);
-      });
-
-      it('Should match color with letters and integers', function() {
-        return assert.equal(HEXA_COLOR_SMALL.test('#f0a'), true);
-      });
-
-      it('Should match color with only letters', function() {
-        return assert.equal(HEXA_COLOR_SMALL.test('#fff'), true);
-      });
-
-      it('Regex should not care about the case', function() {
-        return assert.equal(HEXA_COLOR_SMALL.test('#Abc'), true);
-      });
-
-      it('Should not match', function() {
-        return assert.equal(HEXA_COLOR_SMALL.test('#AbG'), false);
-      });
-    // });
+  // Defines a Mocha unit test
+  describe("Test CSS hexa shorthand color Regex", () => {
+    it('Should match color with only integer', function() {
+      assert.ok('#000'.match(HEXA_COLOR_SMALL));
+    });
+    it('Should match color with letters and integers', function() {
+      assert.ok('#f0a'.match(HEXA_COLOR_SMALL));
+    });
+    it('Should match color with only letters', function() {
+      assert.ok('#fff'.match(HEXA_COLOR_SMALL));
+    });
+    it('Regex should not care about the case', function() {
+      assert.ok('#Abc'.match(HEXA_COLOR_SMALL));
+    });
+    it('Should match with different characters at the end', function() {
+      assert.ok('#Abc'.match(HEXA_COLOR_SMALL));
+      assert.ok('#Abc '.match(HEXA_COLOR_SMALL));
+      assert.ok('#Abc,'.match(HEXA_COLOR_SMALL));
+      assert.ok('#Abc;'.match(HEXA_COLOR_SMALL));
+      assert.ok('#Abc\n'.match(HEXA_COLOR_SMALL));
+    });
+    it('Should not match', function() {
+      assert.notOk('#AbG'.match(HEXA_COLOR_SMALL));
+      assert.notOk('#AbcG'.match(HEXA_COLOR_SMALL));
+      assert.notOk('#Ab'.match(HEXA_COLOR_SMALL));
+    });
+  });
+  describe("Test CSS hexa color Regex", () => {
+    it('Should match color with only integer', function() {
+      assert.ok('#000000'.match(HEXA_COLOR));
+    });
+    it('Should match color with letters and integers', function() {
+      assert.ok('#f0f0f0'.match(HEXA_COLOR));
+    });
+    it('Should match color with only letters', function() {
+      assert.ok('#ffffff'.match(HEXA_COLOR));
+    });
+    it('Regex should not care about the case', function() {
+      assert.ok('#Abc012'.match(HEXA_COLOR));
+    });
+    it('Should match with different characters at the end', function() {
+      assert.ok('#ffffff '.match(HEXA_COLOR));
+      assert.ok('#ffffff,'.match(HEXA_COLOR));
+      assert.ok('#ffffff;'.match(HEXA_COLOR));
+      assert.ok('#ffffff\n'.match(HEXA_COLOR));
+    });
+    it('Should not match', function() {
+      assert.notOk('#fffffg'.match(HEXA_COLOR));
+      assert.notOk('#ffffffg'.match(HEXA_COLOR));
+      assert.notOk('#fffff'.match(HEXA_COLOR));
+    });
+  });
 });
 
