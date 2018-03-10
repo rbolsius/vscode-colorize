@@ -25,18 +25,12 @@ class SassExtractor implements IVariableStrategy {
       let color = ColorExtractor.extractOneColor(text.slice(match.index + match[0].length).trim()) || this.extractVariable(fileName, text.slice(match.index + match[0].length).trim());
       if (this.store.has(varName, fileName, line)) {
         const decoration = this.store.get(varName, fileName, line);
-        if (color === undefined) { // null?
-          this.store.delete(varName, fileName, line); // handle by store?? when update (add the same)
-        } else {
-          decoration[0].update(<Color>color);
-        }
+        decoration[0].update(<Color>color);
         continue;
+      } else {
+        const variable = new Variable(varName, <Color> color, {fileName, line});
+        this.store.addEntry(varName, variable); // update entry??
       }
-      if (color === undefined || color === null) {
-        continue;
-      }
-      const variable = new Variable(varName, <Color> color, {fileName, line});
-      this.store.addEntry(varName, variable); // update entry??
     }
   }
   extractVariables(fileName: string, fileLines: DocumentLine[]): Promise<LineExtraction[]> {
