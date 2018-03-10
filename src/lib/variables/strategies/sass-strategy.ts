@@ -44,12 +44,12 @@ class SassExtractor implements IVariableStrategy {
           continue;
         }
         let decorations = this.store.findClosestDeclaration(varName, fileName);
-        // if (decorations.length === 0) { // if no declarations add all
-        //   this.variablesDeclarations_2.delete(varName);
-        //   continue;
-        // }
         let deco = Object.create(decorations);
-        deco.color = new Color(varName, match.index, deco.color.alpha, deco.color.rgb);
+        if (deco.color) {
+          deco.color = new Color(varName, match.index, deco.color.rgb, deco.color.alpha);
+        } else {
+          deco.color = new Color(varName, match.index, null);
+        }
         colors.push(deco);
       }
       return {line, colors};
