@@ -88,27 +88,36 @@ class VariableDecoration implements Observer {
   }
 
   private _generateDecorator() {
-    let backgroundDecorationType = window.createTextEditorDecorationType({
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      borderColor: this.variable.color.toRgbString(),
-      backgroundColor: this.variable.color.toRgbString(),
-      color: generateOptimalTextColor(this.variable.color)
-    });
-    this.decoration = backgroundDecorationType;
+    if (this.variable.color.rgb) {
+      let backgroundDecorationType = window.createTextEditorDecorationType({
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: this.variable.color.toRgbString(),
+        backgroundColor: this.variable.color.toRgbString(),
+        color: generateOptimalTextColor(this.variable.color)
+      });
+      this.decoration = backgroundDecorationType;
+    } else {
+      this.deleted = true;
+    }
   }
   addUpdateCallback(callback) {
     this._updateCallback = callback;
   }
   updateDecoration(color: Color) {
     this.deleted = false;
-    this._decoration.dispose();
-    this.variable.color.rgb = color.rgb;
+    try {
+      this._decoration.dispose(); // can fail
+    } catch {}
+    try {
+      this.variable.color.rgb = Object.create(color.rgb); // can fail (?)
+    } catch {}
     this._generateDecorator();
     return this._updateCallback(this);
   }
   disposeDecoration() {
     this.dispose(); // should trigger new search for this variable?
+    this.variable.color.rgb = null; // can fail (?)
     this.deleted = true;
   }
   update(args: Object[]) {
