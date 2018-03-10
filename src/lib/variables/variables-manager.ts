@@ -62,8 +62,9 @@ class VariablesManager {
     return VariablesExtractor.extractVariables(fileName, fileLines);
   }
 
-  public static generateDecoration(Variable: Variable): VariableDecoration {
-    const deco = new VariableDecoration(Variable);
+  public static generateDecoration(Variable: Variable, line: number): VariableDecoration {
+    
+    const deco = new VariableDecoration(Variable, line);
     Variable.registerObserver(deco);
     return deco;
   }

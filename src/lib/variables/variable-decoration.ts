@@ -52,9 +52,14 @@ class VariableDecoration implements Observer {
   set decoration(deco: TextEditorDecorationType) {
     this._decoration = deco;
   }
-  public constructor(variable: Variable) {
+  public constructor(variable: Variable, line) {
     this.variable = variable;
     this._generateDecorator();
+    if (this.variable.color) {
+      this.generateRange(line);
+    } else {
+      this.currentRange = new Range(new Position(line, 0), new Position(line, 0));
+    }
   }
   /**
    * Disposed the TextEditorDecorationType
