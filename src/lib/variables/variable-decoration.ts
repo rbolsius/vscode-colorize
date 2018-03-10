@@ -70,7 +70,9 @@ class VariableDecoration implements Observer {
    */
   public dispose(): void {
     // this.color = null;
-    this.decoration.dispose();
+    try {
+      this._decoration.dispose(); // can fail
+    } catch {}
     this.disposed = true;
   }
   /**
@@ -96,7 +98,7 @@ class VariableDecoration implements Observer {
         backgroundColor: this.variable.color.toRgbString(),
         color: generateOptimalTextColor(this.variable.color)
       });
-      this.decoration = backgroundDecorationType;
+      this._decoration = backgroundDecorationType;
     } else {
       this.deleted = true;
     }

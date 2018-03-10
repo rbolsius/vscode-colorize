@@ -26,7 +26,6 @@ class SassExtractor implements IVariableStrategy {
       if (this.store.has(varName, fileName, line)) {
         const decoration = this.store.get(varName, fileName, line);
         decoration[0].update(<Color>color);
-        continue;
       } else {
         const variable = new Variable(varName, <Color> color, {fileName, line});
         this.store.addEntry(varName, variable); // update entry??
@@ -40,17 +39,16 @@ class SassExtractor implements IVariableStrategy {
       while ((match = REGEXP.exec(text)) !== null) {
         let varName =  match[1];
         varName = varName.trim();
-        if (!this.store.has(varName)) {
-          continue;
+        if (this.store.has(varName)) {
+          let decorations = this.store.findClosestDeclaration(varName, fileName);
+          let deco = Object.create(decorations);
+          if (deco.color) {
+            deco.color = new Color(varName, match.index, deco.color.rgb, deco.color.alpha);
+          } else {
+            deco.color = new Color(varName, match.index, null);
+          }
+          colors.push(deco);
         }
-        let decorations = this.store.findClosestDeclaration(varName, fileName);
-        let deco = Object.create(decorations);
-        if (deco.color) {
-          deco.color = new Color(varName, match.index, deco.color.rgb, deco.color.alpha);
-        } else {
-          deco.color = new Color(varName, match.index, null);
-        }
-        colors.push(deco);
       }
       return {line, colors};
     });

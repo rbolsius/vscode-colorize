@@ -24,18 +24,11 @@ class StylusExtractor implements IVariableStrategy {
       let color = ColorExtractor.extractOneColor(text.slice(match.index + match[0].length).trim()) || this.extractVariable(fileName, text.slice(match.index + match[0].length).trim());
       if (this.store.has(varName, fileName, line)) {
         const decoration = this.store.get(varName, fileName, line);
-        if (color === undefined) {
-          this.store.delete(varName, fileName, line); // handle by store?? when update (add the same)
-        } else {
-          decoration[0].update(<Color>color);
-        }
-        continue;
+        decoration[0].update(<Color>color);
+      } else {
+        const variable = new Variable(varName, <Color> color, {fileName, line});
+        this.store.addEntry(varName, variable); // update entry??
       }
-      if (color === undefined || color === null) {
-        continue;
-      }
-      const variable = new Variable(varName, <Color> color, {fileName, line});
-      this.store.addEntry(varName, variable); // update entry??
     }
   }
   extractVariables(fileName: string, fileLines: DocumentLine[]): Promise<LineExtraction[]> {
@@ -48,12 +41,12 @@ class StylusExtractor implements IVariableStrategy {
         let spaces = (match[1] || '').length;
         if (this.store.has(varName)) {
           let decorations = this.store.findClosestDeclaration(varName, fileName);
-          // if (decorations.length === 0) { // if no declarations add all
-          //   this.variablesDeclarations_2.delete(varName);
-          //   continue;
-          // }
           let deco = Object.create(decorations);
-          deco.color = new Color(varName, match.index + spaces, deco.color.rgb, deco.color.alpha);
+          if (deco.color) {
+            deco.color = new Color(varName, match.index + spaces, deco.color.rgb, deco.color.alpha);
+          } else {
+            deco.color = new Color(varName, match.index + spaces, null);
+          }
           colors.push(deco);
         }
       }
