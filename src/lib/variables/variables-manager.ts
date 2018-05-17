@@ -62,9 +62,10 @@ class VariablesManager {
     return VariablesExtractor.extractVariables(fileName, fileLines);
   }
 
-  public static generateDecoration(Variable: Variable): VariableDecoration {
-    const deco = new VariableDecoration(Variable);
-    Variable.registerObserver(deco);
+  public static generateDecoration(variable: Variable, line: number): VariableDecoration {
+    const deco = new VariableDecoration(variable, line);
+    // @ts-ignore
+    variable.base.registerObserver(deco); // tslint:disable-line
     return deco;
   }
 
